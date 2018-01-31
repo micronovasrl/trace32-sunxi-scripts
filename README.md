@@ -1,2 +1,3 @@
-# trace32-sunxi-scripts
-A collection of trace32 .cmm scripts dedicated to sunxi(Allwinner) platform
+# Trace32-Sunxi-Scripts
+A collection of board specific trace32 .cmm scripts
+dedicated to sunxi(Allwinner) platform

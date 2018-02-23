@@ -5,12 +5,11 @@
 ;   It will NOT run on any other board, but may be used as a template
 ;   for others.
 ; @Keywords: uboot, Allwinner, a20*, A20*
-; @Author: Giulio Benetti
+; @Author: Giulio Benetti <giulio.benetti@micronovasrl.com>
 ; @Board: A20-LiNova*
 ; @Chip: A20*
-; @Copyright: (C) 1989-2015 Lauterbach GmbH, licensed for use with TRACE32(R) only
+; @Copyright: (C) 1981-2018 Micronova srl, licensed for use with TRACE32(R) only
 ; --------------------------------------------------------------------------------
-; $Id: a20_linova_linux.cmm
 
 LOCAL &uboot_path
 LOCAL &linux_path

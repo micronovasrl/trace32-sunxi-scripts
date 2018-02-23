@@ -48,6 +48,7 @@ SYStem.Option EnReset OFF
 SYStem.Up
 
 SETUP.IMASKASM ON          ; lock interrupts while single stepping
+SETUP.IMASKHLL ON          ; lock interrupts while single stepping in HLL
 
 ; Load spl in sram
 data.load.auto &uboot_path/spl/u-boot-spl
@@ -125,16 +126,6 @@ WAIT !run()
 SYStem.Down
 SYStem.CONFIG CoreNumber 2.
 CORE.ASSIGN 1 2
-
-SYStem.JTAGCLOCK 20MHz
-
-SYStem.Option DACR ON          ; give Debugger global write permissions
-TrOnchip.Set DABORT OFF        ; used by Linux for page miss!
-TrOnchip.Set PABORT OFF        ; used by Linux for page miss!
-TrOnchip.Set UNDEF OFF         ; my be used by Linux for FPU detection
-SYStem.Option MMUSPACES ON     ; enable space ids to virtual addresses
-
-SYStem.Option EnReset OFF
 
 SYStem.Mode Attach
 Break

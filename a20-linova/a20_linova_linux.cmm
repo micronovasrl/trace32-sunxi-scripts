@@ -22,10 +22,10 @@ LOCAL &awareness
 &dtb_path="&linux_path/arch/arm/boot/dts"
 
 ; Debugger Reset
-WinPAGE.RESet
-AREA.RESet
-WinPOS 0. 25. 75. 9. 0. 0. W000
-AREA.view
+;WinPAGE.RESet
+;AREA.RESet
+;WinPOS 0. 25. 75. 9. 0. 0. W000
+;AREA.view
  
 PRINT "resetting..."
 
@@ -65,10 +65,11 @@ PRINT "loading Linux kernel symbols..."
 Data.LOAD.Elf &linux_path/vmlinux /gnu /NoCODE
 ; Load DTB
 PRINT "loading DTB..." 
-Data.LOAD.Binary &dtb_path/sun7i-a20-linova1-ctp-4_3i-otg.dtb 0x43000000 /NoClear
+Data.LOAD.Binary &dtb_path/sun7i-a20-linova1.dtb 0x43000000 /NoClear
 
 ; Load real uboot
 Data.LOAD.Binary &uboot_path/u-boot.bin 0x4a000000 /NoClear
+Register.Init
 r.s pc 0x4a000000
 
 ; Open serial terminal window on ttyUSB0
@@ -83,7 +84,7 @@ wait 3s
 TERM.Out 0x0a
 WAIT 0.5s
 ; Set boot arguments
-TERM.Out "setenv bootargs console=ttyS0,115200 ip=192.168.111.100:192.168.111.1 root=/dev/nfs rw nfsroot=192.168.111.1:/opt/micronovasrl/a20_linova1_ctp_4_3i/nfs rootwait panic=1 drm_kms_helper.drm_fbdev_overalloc=200" 0xa
+TERM.Out "setenv bootargs console=ttyS0,115200 ip=192.168.111.100:192.168.111.1 root=/dev/nfs rw nfsroot=192.168.111.1:/opt/micronovasrl/a20_linova1_ctp_4_3i/nfs rootwait loglevel=8 drm_kms_helper.drm_fbdev_overalloc=200" 0xa
 WAIT 0.5s
 ; Boot Linux from memory: bootm <kernel>
 TERM.Out "bootz 0x42000000 - 0x43000000" 0x0a

@@ -84,7 +84,7 @@ wait 3s
 TERM.Out 0x0a
 WAIT 0.5s
 ; Set boot arguments
-TERM.Out "setenv bootargs console=ttyS0,115200 ip=192.168.111.100:192.168.111.1 root=/dev/nfs rw nfsroot=192.168.111.1:/opt/micronovasrl/a20_linova1_ctp_4_3i/nfs rootwait loglevel=8 drm_kms_helper.drm_fbdev_overalloc=200" 0xa
+TERM.Out "setenv bootargs console=ttyS0,115200 ip=192.168.111.100:192.168.111.1 root=/dev/nfs rw nfsroot=192.168.111.1:/opt/micronovasrl/a20_linova1_ctp_4_3i/nfs,vers=3 rootwait loglevel=8 drm_kms_helper.drm_fbdev_overalloc=200" 0xa
 WAIT 0.5s
 ; Boot Linux from memory: bootm <kernel>
 TERM.Out "bootz 0x42000000 - 0x43000000" 0x0a

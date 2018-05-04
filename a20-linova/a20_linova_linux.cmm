@@ -14,12 +14,14 @@
 LOCAL &uboot_path
 LOCAL &linux_path
 LOCAL &dtb_path
+LOCAL &dtbo_path
 LOCAL &ka_path
 LOCAL &awareness
 
 &uboot_path="/home/giuliobenetti/git/github/micronovasrl/linova-u-boot"
 &linux_path="/home/giuliobenetti/git/github/micronovasrl/linova-linux"
 &dtb_path="&linux_path/arch/arm/boot/dts"
+&dtbo_path="/home/giuliobenetti/git/github/micronovasrl/linova-overlays"
 
 ; Debugger Reset
 ;WinPAGE.RESet
@@ -58,14 +60,20 @@ Wait 1s
 Break
 
 PRINT "loading Linux image..."
-; Loading Linux image and DTB via ICD  
+; Loading Linux image and DTB via ICD
 Data.LOAD.Binary &linux_path/arch/arm/boot/zImage 0x42000000
 ; Load the Linux kernel symbols into the debugger
 PRINT "loading Linux kernel symbols..."
 Data.LOAD.Elf &linux_path/vmlinux /gnu /NoCODE
 ; Load DTB
-PRINT "loading DTB..." 
+PRINT "loading DTB..."
 Data.LOAD.Binary &dtb_path/sun7i-a20-linova1.dtb 0x43000000 /NoClear
+PRINT "loading DTB Overlay..."
+;Data.LOAD.Binary &dtb_path/sun7i-a20-linova1-ctp-4_3i.dtb 0x43000000 /NoClear
+;PRINT "apply DTB Overlay..."
+
+Data.LOAD.Binary &dtbo_path/aaa-overlay.dtbo 0x43c00000 /NoClear
+PRINT "apply DTB Overlay..."
 
 ; Load real uboot
 Data.LOAD.Binary &uboot_path/u-boot.bin 0x4a000000 /NoClear
@@ -85,6 +93,11 @@ TERM.Out 0x0a
 WAIT 0.5s
 ; Set boot arguments
 TERM.Out "setenv bootargs console=ttyS0,115200 ip=192.168.111.100:192.168.111.1 root=/dev/nfs rw nfsroot=192.168.111.1:/opt/micronovasrl/a20_linova1_ctp_4_3i/nfs,vers=3 rootwait loglevel=8 drm_kms_helper.drm_fbdev_overalloc=200" 0xa
+WAIT 0.5s
+; apply fdt overlay
+TERM.Out "fdt addr 0x43000000" 0x0a
+;TERM.Out "fdt resize 8192" 0x0a
+TERM.Out "fdt apply 0x43c00000" 0x0a
 WAIT 0.5s
 ; Boot Linux from memory: bootm <kernel>
 TERM.Out "bootz 0x42000000 - 0x43000000" 0x0a

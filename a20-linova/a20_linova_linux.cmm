@@ -37,7 +37,7 @@ SYStem.CONFIG CoreNumber 1.
 CORE.ASSIGN 1.
 
 SYSTEM.RESETOUT ; hard reset
-SYStem.JTAGCLOCK 20MHz
+SYStem.JTAGCLOCK 60MHz
 
 SYStem.Option DACR ON          ; give Debugger global write permissions
 TrOnchip.Set DABORT OFF        ; used by Linux for page miss!
@@ -69,9 +69,6 @@ Data.LOAD.Elf &linux_path/vmlinux /gnu /NoCODE
 PRINT "loading DTB..."
 Data.LOAD.Binary &dtb_path/sun7i-a20-linova1.dtb 0x43000000 /NoClear
 PRINT "loading DTB Overlay..."
-;Data.LOAD.Binary &dtb_path/sun7i-a20-linova1-ctp-4_3i.dtb 0x43000000 /NoClear
-;PRINT "apply DTB Overlay..."
-
 Data.LOAD.Binary &dtbo_path/aaa-overlay.dtbo 0x43c00000 /NoClear
 PRINT "apply DTB Overlay..."
 
@@ -96,7 +93,7 @@ TERM.Out "setenv bootargs console=ttyS0,115200 ip=192.168.111.100:192.168.111.1 
 WAIT 0.5s
 ; apply fdt overlay
 TERM.Out "fdt addr 0x43000000" 0x0a
-;TERM.Out "fdt resize 8192" 0x0a
+TERM.Out "fdt resize 8192" 0x0a
 TERM.Out "fdt apply 0x43c00000" 0x0a
 WAIT 0.5s
 ; Boot Linux from memory: bootm <kernel>
@@ -142,6 +139,31 @@ CORE.ASSIGN 1 2
 
 SYStem.Mode Attach
 Break
+
+;b.s dw8250_do_pm
+;b.s dw8250_rs485_config
+;var.watch ((struct uart_8250_port *) 0xC0A9E354)
+var.watch ((struct uart_8250_port *) 0xC0A9E4E0)
+;b.s serial8250_register_8250_port ; here, after initial probe, it get lost rs485 RTS
+;b.s serial8250_do_startup
+;b.s serial8250_do_set_mctrl
+;b.s serial8250_em485_init
+;b.s dw8250_runtime_suspend
+;b.s dw8250_probe
+;b.s pinctrl_bind_pins ; here it causes a little glitch on RTS, acceptable...?
+;b.s uart_add_one_port
+;b.s serial8250_init
+;b.s serial8250_config_port
+;b.s serial8250_set_mctrl
+;b.s cacca
+;b.s dw8250_probe
+Data.dump ASD:0x01c28400
+;Go
+;WAIT !run()
+;b.s serial8250_register_8250_port
+;b.s serial8250_do_startup
+;b.s serial8250_do_set_mctrl
+;Go
 Mode.Hll
 List
 

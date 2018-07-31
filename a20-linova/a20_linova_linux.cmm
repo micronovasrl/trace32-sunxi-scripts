@@ -18,8 +18,8 @@ LOCAL &dtbo_path
 LOCAL &ka_path
 LOCAL &awareness
 
-&uboot_path="/home/giuliobenetti/git/github/micronovasrl/linova-u-boot"
-&linux_path="/home/giuliobenetti/git/github/micronovasrl/linova-linux"
+&uboot_path="/home/giuliobenetti/git/github/giuliobenetti/u-boot/build-linova1"
+&linux_path="/home/giuliobenetti/git/github/giuliobenetti/linux/build-linova1"
 &dtb_path="&linux_path/arch/arm/boot/dts"
 &dtbo_path="/home/giuliobenetti/git/github/micronovasrl/linova-overlays"
 
@@ -67,10 +67,10 @@ PRINT "loading Linux kernel symbols..."
 Data.LOAD.Elf &linux_path/vmlinux /gnu /NoCODE
 ; Load DTB
 PRINT "loading DTB..."
-Data.LOAD.Binary &dtb_path/sun7i-a20-linova1.dtb 0x43000000 /NoClear
-PRINT "loading DTB Overlay..."
-Data.LOAD.Binary &dtbo_path/aaa-overlay.dtbo 0x43c00000 /NoClear
-PRINT "apply DTB Overlay..."
+Data.LOAD.Binary &dtb_path/sun7i-a20-linova1-ctp-4_3i.dtb 0x43000000 /NoClear
+;PRINT "loading DTB Overlay..."
+;Data.LOAD.Binary &dtbo_path/aaa-overlay.dtbo 0x43c00000 /NoClear
+;PRINT "apply DTB Overlay..."
 
 ; Load real uboot
 Data.LOAD.Binary &uboot_path/u-boot.bin 0x4a000000 /NoClear
@@ -89,13 +89,13 @@ wait 3s
 TERM.Out 0x0a
 WAIT 0.5s
 ; Set boot arguments
-TERM.Out "setenv bootargs console=ttyS0,115200 ip=192.168.111.100:192.168.111.1 root=/dev/nfs rw nfsroot=192.168.111.1:/opt/micronovasrl/a20_linova1_ctp_4_3i/nfs,vers=3 rootwait loglevel=8 drm_kms_helper.drm_fbdev_overalloc=200" 0xa
+TERM.Out "setenv bootargs console=ttyS0,115200 ip=192.168.111.100:192.168.111.1 root=/dev/nfs rw nfsroot=192.168.111.1:/opt/giuliobenetti/sunxi/nfs,vers=3 rootwait loglevel=8 drm_kms_helper.drm_fbdev_overalloc=200" 0xa
 WAIT 0.5s
 ; apply fdt overlay
-TERM.Out "fdt addr 0x43000000" 0x0a
-TERM.Out "fdt resize 8192" 0x0a
-TERM.Out "fdt apply 0x43c00000" 0x0a
-WAIT 0.5s
+;TERM.Out "fdt addr 0x43000000" 0x0a
+;TERM.Out "fdt resize 8192" 0x0a
+;TERM.Out "fdt apply 0x43c00000" 0x0a
+;WAIT 0.5s
 ; Boot Linux from memory: bootm <kernel>
 TERM.Out "bootz 0x42000000 - 0x43000000" 0x0a
 break
@@ -143,7 +143,7 @@ Break
 ;b.s dw8250_do_pm
 ;b.s dw8250_rs485_config
 ;var.watch ((struct uart_8250_port *) 0xC0A9E354)
-var.watch ((struct uart_8250_port *) 0xC0A9E4E0)
+;var.watch ((struct uart_8250_port *) 0xC0A9E4E0)
 ;b.s serial8250_register_8250_port ; here, after initial probe, it get lost rs485 RTS
 ;b.s serial8250_do_startup
 ;b.s serial8250_do_set_mctrl
@@ -157,7 +157,7 @@ var.watch ((struct uart_8250_port *) 0xC0A9E4E0)
 ;b.s serial8250_set_mctrl
 ;b.s cacca
 ;b.s dw8250_probe
-Data.dump ASD:0x01c28400
+;Data.dump ASD:0x01c28400
 ;Go
 ;WAIT !run()
 ;b.s serial8250_register_8250_port
